@@ -21,7 +21,7 @@ A simplified TAR archive library implementation in MoonBit, focusing on core fun
 pub enum FileType {
   Normal      // Regular file
   Directory   // Directory
-  Symlink     // Symbolic link (placeholder)
+  Symlink     // Symbolic link
 }
 
 /// Simple TAR header
@@ -47,6 +47,7 @@ pub struct ArchiveStats {
   total_entries : Int
   file_count : Int
   directory_count : Int
+  symlink_count : Int
   total_size : Int
 }
 ```
@@ -64,6 +65,9 @@ archive.add_file("example.txt", "Hello, world!")
 
 // Add a directory
 archive.add_directory("docs")
+
+// Add a symbolic link
+archive.add_symlink("link_name", "target_file.txt")
 
 // Create archive from file list
 let files = [("file1.txt", "Content 1"), ("file2.txt", "Content 2")]
@@ -162,7 +166,7 @@ This is a simplified implementation focused on:
 - No actual TAR format serialization (simplified in-memory representation)
 - No compression support
 - No advanced TAR features (permissions, timestamps, etc.)
-- Symlink support is placeholder only
+- Full symlink support with target path storage
 
 This implementation serves as a foundation that could be extended to support full TAR format compliance and additional features as needed.
 

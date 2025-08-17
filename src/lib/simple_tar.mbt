@@ -59,6 +59,13 @@ pub fn TarArchive::add_directory(self : TarArchive, name : String) -> Unit {
   self.entries.push(entry)
 }
 
+/// Add a symbolic link to the archive
+pub fn TarArchive::add_symlink(self : TarArchive, name : String, target : String) -> Unit {
+  let header = { name, size: target.length(), file_type: Symlink }
+  let entry = { header, data: target }
+  self.entries.push(entry)
+}
+
 /// Get all entries
 pub fn TarArchive::get_entries(self : TarArchive) -> Array[TarEntry] {
   self.entries
@@ -102,6 +109,7 @@ pub struct ArchiveStats {
   total_entries : Int
   file_count : Int
   directory_count : Int
+  symlink_count : Int
   total_size : Int
 } derive(Show)
 
@@ -109,6 +117,7 @@ pub struct ArchiveStats {
 pub fn TarArchive::get_stats(self : TarArchive) -> ArchiveStats {
   let mut file_count = 0
   let mut directory_count = 0
+  let mut symlink_count = 0
   let mut total_size = 0
   
   let mut i = 0
@@ -120,7 +129,10 @@ pub fn TarArchive::get_stats(self : TarArchive) -> ArchiveStats {
         total_size = total_size + entry.header.size
       }
       Directory => directory_count = directory_count + 1
-      _ => ()
+      Symlink => {
+        symlink_count = symlink_count + 1
+        total_size = total_size + entry.header.size
+      }
     }
     i = i + 1
   }
@@ -129,6 +141,7 @@ pub fn TarArchive::get_stats(self : TarArchive) -> ArchiveStats {
     total_entries: self.entries.length(),
     file_count,
     directory_count,
+    symlink_count,
     total_size
   }
 }

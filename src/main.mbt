@@ -11,6 +11,7 @@ fn main {
   archive.add_file("hello.txt", "Hello from TAR library!")
   archive.add_file("info.md", "# TAR Library\n\nA simple TAR implementation in MoonBit.")
   archive.add_directory("docs")
+  archive.add_symlink("readme_link", "info.md")
   
   // Show archive info
   println("Created archive with " + archive.count().to_string() + " entries")
@@ -18,6 +19,7 @@ fn main {
   let stats = archive.get_stats()
   println("Files: " + stats.file_count.to_string() + 
           ", Directories: " + stats.directory_count.to_string() + 
+          ", Symlinks: " + stats.symlink_count.to_string() +
           ", Total size: " + stats.total_size.to_string() + " bytes")
   
   // List contents

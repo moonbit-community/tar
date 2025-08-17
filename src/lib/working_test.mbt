@@ -105,6 +105,9 @@ test "Archive statistics" {
   if stats.directory_count != 1 {
     fail("Should have 1 directory")
   }
+  if stats.symlink_count != 0 {
+    fail("Should have 0 symlinks")
+  }
   if stats.total_size != 11 {
     fail("Total size should be 11 bytes")
   }
@@ -148,8 +151,48 @@ test "Extract files from archive" {
   }
 }
 
-// FileType conversion test removed due to enum syntax issues
-// The functionality works but MoonBit enum syntax is complex
+test "Add symlinks to archive" {
+  let archive = TarArchive::new()
+  
+  // Add a file and a symlink pointing to it
+  archive.add_file("original.txt", "Original content")
+  archive.add_symlink("link_to_original", "original.txt")
+  archive.add_symlink("another_link", "/path/to/external/file")
+  
+  if archive.count() != 3 {
+    fail("Archive should have 3 entries")
+  }
+  
+  let entries = archive.get_entries()
+  
+  // Check that the symlinks have correct type
+  match entries[1].header.file_type {
+    Symlink => ()  // Expected
+    _ => fail("Second entry should be a symlink")
+  }
+  
+  match entries[2].header.file_type {
+    Symlink => ()  // Expected
+    _ => fail("Third entry should be a symlink")
+  }
+  
+  // Check symlink targets are stored in data
+  if entries[1].data != "original.txt" {
+    fail("Symlink should store target path in data")
+  }
+  if entries[2].data != "/path/to/external/file" {
+    fail("Symlink should store target path in data")
+  }
+  
+  // Check statistics include symlinks
+  let stats = archive.get_stats()
+  if stats.symlink_count != 2 {
+    fail("Should have 2 symlinks in statistics")
+  }
+  if stats.file_count != 1 {
+    fail("Should have 1 regular file")
+  }
+}
 
 test "Round-trip create and extract" {
   let original_files = [
