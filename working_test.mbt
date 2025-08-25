@@ -1,7 +1,7 @@
 // Working tests for the simplified TAR library
 
 test "Create empty archive" {
-  let archive = TarArchive::new()
+  let archive = @tar.TarArchive::new()
   if !archive.is_empty() {
     fail("New archive should be empty")
   }
@@ -11,7 +11,7 @@ test "Create empty archive" {
 }
 
 test "Add files to archive" {
-  let archive = TarArchive::new()
+  let archive = @tar.TarArchive::new()
   
   archive.add_file("test.txt", "Hello, world!")
   archive.add_file("another.txt", "Another file")
@@ -33,7 +33,7 @@ test "Add files to archive" {
 }
 
 test "Add directories to archive" {
-  let archive = TarArchive::new()
+  let archive = @tar.TarArchive::new()
   
   archive.add_directory("dir1")
   archive.add_directory("dir2/")  // Already has trailing slash
@@ -67,7 +67,7 @@ test "Add directories to archive" {
 }
 
 test "Find entries by name" {
-  let archive = TarArchive::new()
+  let archive = @tar.TarArchive::new()
   
   archive.add_file("findme.txt", "Found!")
   archive.add_file("other.txt", "Other content")
@@ -88,7 +88,7 @@ test "Find entries by name" {
 }
 
 test "Archive statistics" {
-  let archive = TarArchive::new()
+  let archive = @tar.TarArchive::new()
   
   archive.add_file("file1.txt", "Hello")      // 5 bytes
   archive.add_file("file2.txt", "World!")     // 6 bytes
@@ -115,7 +115,7 @@ test "Archive statistics" {
 
 test "Create archive from files array" {
   let files = [("a.txt", "A"), ("b.txt", "B"), ("c.txt", "C")]
-  let archive = create_simple_archive(files)
+  let archive = @tar.create_simple_archive(files)
   
   if archive.count() != 3 {
     fail("Archive should have 3 entries")
@@ -128,13 +128,13 @@ test "Create archive from files array" {
 }
 
 test "Extract files from archive" {
-  let archive = TarArchive::new()
+  let archive = @tar.TarArchive::new()
   
   archive.add_file("extract1.txt", "Content 1")
   archive.add_file("extract2.txt", "Content 2")
   archive.add_directory("skip_this_dir")  // Should be skipped in extraction
   
-  let extracted = extract_simple_archive(archive)
+  let extracted = @tar.extract_simple_archive(archive)
   
   if extracted.length() != 2 {
     fail("Should extract 2 files (directories skipped)")
@@ -152,7 +152,7 @@ test "Extract files from archive" {
 }
 
 test "Add symlinks to archive" {
-  let archive = TarArchive::new()
+  let archive = @tar.TarArchive::new()
   
   // Add a file and a symlink pointing to it
   archive.add_file("original.txt", "Original content")
@@ -201,8 +201,8 @@ test "Round-trip create and extract" {
     ("config.json", "{\"version\": \"1.0\"}")
   ]
   
-  let archive = create_simple_archive(original_files)
-  let extracted_files = extract_simple_archive(archive)
+  let archive = @tar.create_simple_archive(original_files)
+  let extracted_files = @tar.extract_simple_archive(archive)
   
   if extracted_files.length() != original_files.length() {
     fail("Should extract same number of files")

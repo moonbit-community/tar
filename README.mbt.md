@@ -30,7 +30,7 @@ This is pure MoonBit code with no external dependencies.
 ```moonbit
 test "README example" {
   // Create a new archive
-  let archive = TarArchive::new()
+  let archive = @tar.TarArchive::new()
 
   // Add files and directories
   archive.add_file("example.txt", "Hello, world!")
@@ -41,7 +41,7 @@ test "README example" {
   println("Archive has " + archive.count().to_string() + " entries")
 
   // Extract all files
-  let files = extract_simple_archive(archive)
+  let files = @tar.extract_simple_archive(archive)
   
   // Verify the extraction worked
   if files.length() != 2 {
