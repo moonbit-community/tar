@@ -5,7 +5,7 @@ fn main {
   println("=======================")
   
   // Create a simple demonstration
-  let archive = @lib.TarArchive::new()
+  let archive = @bobzhang/tar.TarArchive::new()
   
   // Add some sample files
   archive.add_file("hello.txt", "Hello from TAR library!")
@@ -32,4 +32,8 @@ fn main {
   }
   
   println("\nTAR library is working correctly! ✅")
+  
+  // Run the demo from the example
+  println("\n")
+  @bobzhang/tar.demo_tar_library()
 }

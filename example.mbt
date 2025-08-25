@@ -1,10 +1,10 @@
 // Example usage of the TAR library
 
-fn main {
+pub fn demo_tar_library() -> Unit {
   println("=== TAR Library Example ===")
   
   // Create a new archive
-  let archive = @lib.TarArchive::new()
+  let archive = TarArchive::new()
   
   // Add some files
   archive.add_file("README.md", "# My Project\n\nThis is a test project.")
@@ -34,8 +34,8 @@ fn main {
   // Demonstrate round-trip
   println("\n=== Round-trip Test ===")
   let test_files = [("file1.txt", "Content 1"), ("file2.txt", "Content 2")]
-  let test_archive = @lib.create_simple_archive(test_files)
-  let extracted = @lib.extract_simple_archive(test_archive)
+  let test_archive = create_simple_archive(test_files)
+  let extracted = extract_simple_archive(test_archive)
   
   println("Original files: " + test_files.length().to_string())
   println("Extracted files: " + extracted.length().to_string())
@@ -54,7 +54,12 @@ fn main {
     Some(entry) => {
       println("Found main.mbt:")
       println("  Size: " + entry.header.size.to_string() + " bytes")
-      println("  Content preview: " + entry.data.substring(0, 20) + "...")
+      let preview = if entry.data.length() > 20 { 
+        entry.data.substring(end=20) + "..." 
+      } else { 
+        entry.data 
+      }
+      println("  Content preview: " + preview)
     }
     None => println("main.mbt not found")
   }

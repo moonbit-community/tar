@@ -22,3 +22,4 @@ test "Create from files" {
     fail("Archive should have 2 entries")
   }
 }
+
