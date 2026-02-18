@@ -1,7 +1,8 @@
 // Working tests for the simplified TAR library
 
+///|
 test "Create empty archive" {
-  let archive = @tar.TarArchive::new()
+  let archive = TarArchive::new()
   if !archive.is_empty() {
     fail("New archive should be empty")
   }
@@ -10,16 +11,17 @@ test "Create empty archive" {
   }
 }
 
+///|
 test "Add files to archive" {
-  let archive = @tar.TarArchive::new()
-  
+  let archive = TarArchive::new()
+
   archive.add_file("test.txt", "Hello, world!")
   archive.add_file("another.txt", "Another file")
-  
+
   if archive.count() != 2 {
     fail("Archive should have 2 entries")
   }
-  
+
   let names = archive.list_names()
   if names.length() != 2 {
     fail("Should have 2 file names")
@@ -32,29 +34,30 @@ test "Add files to archive" {
   }
 }
 
+///|
 test "Add directories to archive" {
-  let archive = @tar.TarArchive::new()
-  
+  let archive = TarArchive::new()
+
   archive.add_directory("dir1")
-  archive.add_directory("dir2/")  // Already has trailing slash
-  
+  archive.add_directory("dir2/") // Already has trailing slash
+
   if archive.count() != 2 {
     fail("Archive should have 2 entries")
   }
-  
+
   let entries = archive.get_entries()
-  
+
   // Check that both entries are directories using match
   match entries[0].header.file_type {
-    Directory => ()  // Expected
+    Directory => () // Expected
     _ => fail("First entry should be a directory")
   }
-  
+
   match entries[1].header.file_type {
-    Directory => ()  // Expected
+    Directory => () // Expected
     _ => fail("Second entry should be a directory")
   }
-  
+
   // Both should end with '/'
   let name0 = entries[0].header.name
   let name1 = entries[1].header.name
@@ -66,36 +69,37 @@ test "Add directories to archive" {
   }
 }
 
+///|
 test "Find entries by name" {
-  let archive = @tar.TarArchive::new()
-  
+  let archive = TarArchive::new()
+
   archive.add_file("findme.txt", "Found!")
   archive.add_file("other.txt", "Other content")
-  
+
   match archive.find_entry("findme.txt") {
-    Some(entry) => {
+    Some(entry) =>
       if entry.data != "Found!" {
         fail("Found entry should have correct content")
       }
-    }
     None => fail("Should find the entry")
   }
-  
+
   match archive.find_entry("nonexistent.txt") {
     Some(_) => fail("Should not find non-existent entry")
-    None => ()  // Expected
+    None => () // Expected
   }
 }
 
+///|
 test "Archive statistics" {
-  let archive = @tar.TarArchive::new()
-  
-  archive.add_file("file1.txt", "Hello")      // 5 bytes
-  archive.add_file("file2.txt", "World!")     // 6 bytes
+  let archive = TarArchive::new()
+
+  archive.add_file("file1.txt", "Hello") // 5 bytes
+  archive.add_file("file2.txt", "World!") // 6 bytes
   archive.add_directory("testdir")
-  
+
   let stats = archive.get_stats()
-  
+
   if stats.total_entries != 3 {
     fail("Should have 3 total entries")
   }
@@ -113,36 +117,38 @@ test "Archive statistics" {
   }
 }
 
+///|
 test "Create archive from files array" {
   let files = [("a.txt", "A"), ("b.txt", "B"), ("c.txt", "C")]
-  let archive = @tar.create_simple_archive(files)
-  
+  let archive = create_simple_archive(files)
+
   if archive.count() != 3 {
     fail("Archive should have 3 entries")
   }
-  
+
   let names = archive.list_names()
   if names[0] != "a.txt" || names[1] != "b.txt" || names[2] != "c.txt" {
     fail("Files should be in correct order")
   }
 }
 
+///|
 test "Extract files from archive" {
-  let archive = @tar.TarArchive::new()
-  
+  let archive = TarArchive::new()
+
   archive.add_file("extract1.txt", "Content 1")
   archive.add_file("extract2.txt", "Content 2")
-  archive.add_directory("skip_this_dir")  // Should be skipped in extraction
-  
-  let extracted = @tar.extract_simple_archive(archive)
-  
+  archive.add_directory("skip_this_dir") // Should be skipped in extraction
+
+  let extracted = extract_simple_archive(archive)
+
   if extracted.length() != 2 {
     fail("Should extract 2 files (directories skipped)")
   }
-  
+
   let (name1, content1) = extracted[0]
   let (name2, content2) = extracted[1]
-  
+
   if name1 != "extract1.txt" || content1 != "Content 1" {
     fail("First extracted file should match")
   }
@@ -151,31 +157,32 @@ test "Extract files from archive" {
   }
 }
 
+///|
 test "Add symlinks to archive" {
-  let archive = @tar.TarArchive::new()
-  
+  let archive = TarArchive::new()
+
   // Add a file and a symlink pointing to it
   archive.add_file("original.txt", "Original content")
   archive.add_symlink("link_to_original", "original.txt")
   archive.add_symlink("another_link", "/path/to/external/file")
-  
+
   if archive.count() != 3 {
     fail("Archive should have 3 entries")
   }
-  
+
   let entries = archive.get_entries()
-  
+
   // Check that the symlinks have correct type
   match entries[1].header.file_type {
-    Symlink => ()  // Expected
+    Symlink => () // Expected
     _ => fail("Second entry should be a symlink")
   }
-  
+
   match entries[2].header.file_type {
-    Symlink => ()  // Expected
+    Symlink => () // Expected
     _ => fail("Third entry should be a symlink")
   }
-  
+
   // Check symlink targets are stored in data
   if entries[1].data != "original.txt" {
     fail("Symlink should store target path in data")
@@ -183,7 +190,7 @@ test "Add symlinks to archive" {
   if entries[2].data != "/path/to/external/file" {
     fail("Symlink should store target path in data")
   }
-  
+
   // Check statistics include symlinks
   let stats = archive.get_stats()
   if stats.symlink_count != 2 {
@@ -194,33 +201,73 @@ test "Add symlinks to archive" {
   }
 }
 
+///|
 test "Round-trip create and extract" {
   let original_files = [
     ("readme.md", "# My Project"),
     ("main.mbt", "fn main() { println(\"Hello\") }"),
-    ("config.json", "{\"version\": \"1.0\"}")
+    ("config.json", "{\"version\": \"1.0\"}"),
   ]
-  
-  let archive = @tar.create_simple_archive(original_files)
-  let extracted_files = @tar.extract_simple_archive(archive)
-  
+
+  let archive = create_simple_archive(original_files)
+  let extracted_files = extract_simple_archive(archive)
+
   if extracted_files.length() != original_files.length() {
     fail("Should extract same number of files")
   }
-  
+
   let mut i = 0
   while i < original_files.length() {
     let (orig_name, orig_content) = original_files[i]
     let (extr_name, extr_content) = extracted_files[i]
-    
+
     if orig_name != extr_name {
       fail("File names should match after round-trip")
     }
     if orig_content != extr_content {
       fail("File contents should match after round-trip")
     }
-    
+
     i = i + 1
   }
 }
 
+///|
+test "Round-trip to_bytes and from_bytes" {
+  let archive = TarArchive::new()
+  archive.add_file("a.txt", "Alpha")
+  archive.add_directory("dir")
+  archive.add_symlink("link", "a.txt")
+
+  let bytes = archive.to_bytes()
+  let decoded = TarArchive::from_bytes(bytes)
+
+  if decoded.count() != 3 {
+    fail("Decoded archive should have 3 entries")
+  }
+
+  match decoded.find_entry("a.txt") {
+    Some(entry) =>
+      if entry.data != "Alpha" {
+        fail("File content should round-trip")
+      }
+    None => fail("File entry missing after decode")
+  }
+
+  match decoded.find_entry("dir/") {
+    Some(entry) =>
+      match entry.header.file_type {
+        Directory => ()
+        _ => fail("Directory entry should remain directory")
+      }
+    None => fail("Directory entry missing after decode")
+  }
+
+  match decoded.find_entry("link") {
+    Some(entry) =>
+      if entry.data != "a.txt" {
+        fail("Symlink target should round-trip")
+      }
+    None => fail("Symlink entry missing after decode")
+  }
+}

@@ -1,0 +1,69 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonbit-community/tar"
+
+// Values
+pub const BLOCK_SIZE : Int = 512
+
+pub const HEADER_SIZE : Int = 512
+
+pub fn create_simple_archive(Array[(String, String)]) -> TarArchive
+
+pub fn demo_tar_library() -> Unit
+
+pub fn extract_simple_archive(TarArchive) -> Array[(String, String)]
+
+// Errors
+
+// Types and methods
+pub struct ArchiveStats {
+  total_entries : Int
+  file_count : Int
+  directory_count : Int
+  symlink_count : Int
+  total_size : Int
+}
+pub impl Show for ArchiveStats
+
+pub enum FileType {
+  Normal
+  Directory
+  Symlink
+}
+pub fn FileType::to_byte(Self) -> Int
+pub impl Eq for FileType
+pub impl Show for FileType
+
+pub struct SimpleHeader {
+  name : String
+  size : Int
+  file_type : FileType
+}
+pub impl Show for SimpleHeader
+
+pub struct TarArchive {
+  entries : Array[TarEntry]
+}
+pub fn TarArchive::add_directory(Self, String) -> Unit
+pub fn TarArchive::add_file(Self, String, String) -> Unit
+pub fn TarArchive::add_symlink(Self, String, String) -> Unit
+pub fn TarArchive::count(Self) -> Int
+pub fn TarArchive::find_entry(Self, String) -> TarEntry?
+pub fn TarArchive::from_bytes(Bytes) -> Self
+pub fn TarArchive::get_entries(Self) -> Array[TarEntry]
+pub fn TarArchive::get_stats(Self) -> ArchiveStats
+pub fn TarArchive::is_empty(Self) -> Bool
+pub fn TarArchive::list_names(Self) -> Array[String]
+pub fn TarArchive::new() -> Self
+pub fn TarArchive::to_bytes(Self) -> Bytes
+pub impl Show for TarArchive
+
+pub struct TarEntry {
+  header : SimpleHeader
+  data : String
+}
+pub impl Show for TarEntry
+
+// Type aliases
+
+// Traits
+
