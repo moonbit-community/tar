@@ -27,7 +27,7 @@ This is pure MoonBit code with no external dependencies.
 
 ## Quick Start
 
-```moonbit nocheck
+```moonbit check
 ///|
 test "README example" {
   // Create a new archive
