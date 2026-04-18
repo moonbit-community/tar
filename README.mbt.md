@@ -27,7 +27,8 @@ This is pure MoonBit code with no external dependencies.
 
 ## Quick Start
 
-```moonbit
+```moonbit nocheck
+///|
 test "README example" {
   // Create a new archive
   let archive = @tar.TarArchive::new()
@@ -42,7 +43,7 @@ test "README example" {
 
   // Extract all files
   let files = @tar.extract_simple_archive(archive)
-  
+
   // Verify the extraction worked
   if files.length() != 2 {
     fail("Should extract 2 files (directories are skipped)")

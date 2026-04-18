@@ -1,5 +1,6 @@
 // Minimal test to check basic functionality
 
+///|
 test "Create archive" {
   let archive = @tar.TarArchive::new()
   if !archive.is_empty() {
@@ -7,6 +8,7 @@ test "Create archive" {
   }
 }
 
+///|
 test "Add file" {
   let archive = @tar.TarArchive::new()
   archive.add_file("test.txt", "Hello")
@@ -15,6 +17,7 @@ test "Add file" {
   }
 }
 
+///|
 test "Create from files" {
   let files = [("a.txt", "A"), ("b.txt", "B")]
   let archive = @tar.create_simple_archive(files)
@@ -22,4 +25,3 @@ test "Create from files" {
     fail("Archive should have 2 entries")
   }
 }
-
