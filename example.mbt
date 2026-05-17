@@ -58,7 +58,7 @@ pub fn demo_tar_library() -> Unit {
       println("Found main.mbt:")
       println("  Size: " + entry.header.size.to_string() + " bytes")
       let preview = if entry.data.length() > 20 {
-        entry.data[:20].to_string() + "..."
+        entry.data[:20].to_owned() + "..."
       } else {
         entry.data
       }
