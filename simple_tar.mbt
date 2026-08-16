@@ -17,6 +17,12 @@ pub enum FileType {
 } derive(Eq, Debug)
 
 ///|
+pub extend FileType with Eq::{not_equal, equal}
+
+///|
+pub extend FileType with @debug.Debug::{to_repr}
+
+///|
 /// Convert FileType to byte
 pub fn FileType::to_byte(self : FileType) -> Int {
   match self {
@@ -35,6 +41,9 @@ pub struct SimpleHeader {
 } derive(Debug)
 
 ///|
+pub extend SimpleHeader with @debug.Debug::{to_repr}
+
+///|
 /// TAR entry
 pub struct TarEntry {
   header : SimpleHeader
@@ -42,10 +51,16 @@ pub struct TarEntry {
 } derive(Debug)
 
 ///|
+pub extend TarEntry with @debug.Debug::{to_repr}
+
+///|
 /// Simple TAR archive
 pub struct TarArchive {
   entries : Array[TarEntry]
 } derive(Debug)
+
+///|
+pub extend TarArchive with @debug.Debug::{to_repr}
 
 ///|
 /// Create a new archive
@@ -144,6 +159,9 @@ pub struct ArchiveStats {
 } derive(Debug)
 
 ///|
+pub extend ArchiveStats with @debug.Debug::{to_repr}
+
+///|
 /// Get statistics about the archive
 pub fn TarArchive::get_stats(self : TarArchive) -> ArchiveStats {
   let mut file_count = 0
@@ -206,26 +224,41 @@ pub fn extract_simple_archive(archive : TarArchive) -> Array[(String, String)] {
 }
 
 ///|
-pub impl Show for FileType with output(self, logger) {
+pub impl Show for FileType with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
 
 ///|
-pub impl Show for SimpleHeader with output(self, logger) {
+pub extend FileType with Show::{to_string, output}
+
+///|
+pub impl Show for SimpleHeader with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
 
 ///|
-pub impl Show for TarEntry with output(self, logger) {
+pub extend SimpleHeader with Show::{to_string, output}
+
+///|
+pub impl Show for TarEntry with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
 
 ///|
-pub impl Show for TarArchive with output(self, logger) {
+pub extend TarEntry with Show::{to_string, output}
+
+///|
+pub impl Show for TarArchive with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
 
 ///|
-pub impl Show for ArchiveStats with output(self, logger) {
+pub extend TarArchive with Show::{to_string, output}
+
+///|
+pub impl Show for ArchiveStats with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
+
+///|
+pub extend ArchiveStats with Show::{to_string, output}

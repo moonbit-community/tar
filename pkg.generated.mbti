@@ -26,6 +26,9 @@ pub struct ArchiveStats {
   symlink_count : Int
   total_size : Int
 } derive(@debug.Debug)
+pub fn ArchiveStats::output(Self, &Logger) -> Unit
+pub fn ArchiveStats::to_repr(Self) -> @debug.Repr
+pub fn ArchiveStats::to_string(Self) -> String
 pub impl Show for ArchiveStats
 
 pub enum FileType {
@@ -33,7 +36,12 @@ pub enum FileType {
   Directory
   Symlink
 } derive(Eq, @debug.Debug)
+pub fn FileType::equal(Self, Self) -> Bool
+pub fn FileType::not_equal(Self, Self) -> Bool
+pub fn FileType::output(Self, &Logger) -> Unit
 pub fn FileType::to_byte(Self) -> Int
+pub fn FileType::to_repr(Self) -> @debug.Repr
+pub fn FileType::to_string(Self) -> String
 pub impl Show for FileType
 
 pub struct SimpleHeader {
@@ -41,6 +49,9 @@ pub struct SimpleHeader {
   size : Int
   file_type : FileType
 } derive(@debug.Debug)
+pub fn SimpleHeader::output(Self, &Logger) -> Unit
+pub fn SimpleHeader::to_repr(Self) -> @debug.Repr
+pub fn SimpleHeader::to_string(Self) -> String
 pub impl Show for SimpleHeader
 
 pub struct TarArchive {
@@ -56,15 +67,20 @@ pub fn TarArchive::get_stats(Self) -> ArchiveStats
 pub fn TarArchive::is_empty(Self) -> Bool
 pub fn TarArchive::list_names(Self) -> Array[String]
 pub fn TarArchive::new() -> Self
+pub fn TarArchive::output(Self, &Logger) -> Unit
+pub fn TarArchive::to_repr(Self) -> @debug.Repr
+pub fn TarArchive::to_string(Self) -> String
 pub impl Show for TarArchive
 
 pub struct TarEntry {
   header : SimpleHeader
   data : String
 } derive(@debug.Debug)
+pub fn TarEntry::output(Self, &Logger) -> Unit
+pub fn TarEntry::to_repr(Self) -> @debug.Repr
+pub fn TarEntry::to_string(Self) -> String
 pub impl Show for TarEntry
 
 // Type aliases
 
 // Traits
-
