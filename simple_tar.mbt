@@ -17,6 +17,12 @@ pub enum FileType {
 } derive(Eq, Debug)
 
 ///|
+pub extend FileType with Eq::{equal, not_equal}
+
+///|
+pub extend FileType with @debug.Debug::{to_repr}
+
+///|
 /// Convert FileType to byte
 pub fn FileType::to_byte(self : FileType) -> Int {
   match self {
@@ -35,11 +41,17 @@ pub struct SimpleHeader {
 } derive(Debug)
 
 ///|
+pub extend SimpleHeader with @debug.Debug::{to_repr}
+
+///|
 /// TAR entry
 pub struct TarEntry {
   header : SimpleHeader
   data : String
 } derive(Debug)
+
+///|
+pub extend TarEntry with @debug.Debug::{to_repr}
 
 ///|
 /// Simple TAR archive
@@ -48,9 +60,12 @@ pub struct TarArchive {
 } derive(Debug)
 
 ///|
+pub extend TarArchive with @debug.Debug::{to_repr}
+
+///|
 /// Create a new archive
 pub fn TarArchive::new() -> TarArchive {
-  { entries: [] }
+  { entries: [], }
 }
 
 ///|
@@ -60,8 +75,8 @@ pub fn TarArchive::add_file(
   name : String,
   content : String,
 ) -> Unit {
-  let header = { name, size: content.length(), file_type: Normal }
-  let entry = { header, data: content }
+  let header = { name, size: content.length(), file_type: Normal, }
+  let entry = { header, data: content, }
   self.entries.push(entry)
 }
 
@@ -73,8 +88,8 @@ pub fn TarArchive::add_directory(self : TarArchive, name : String) -> Unit {
   } else {
     name + "/"
   }
-  let header = { name: dir_name, size: 0, file_type: Directory }
-  let entry = { header, data: "" }
+  let header = { name: dir_name, size: 0, file_type: Directory, }
+  let entry = { header, data: "", }
   self.entries.push(entry)
 }
 
@@ -85,8 +100,8 @@ pub fn TarArchive::add_symlink(
   name : String,
   target : String,
 ) -> Unit {
-  let header = { name, size: target.length(), file_type: Symlink }
-  let entry = { header, data: target }
+  let header = { name, size: target.length(), file_type: Symlink, }
+  let entry = { header, data: target, }
   self.entries.push(entry)
 }
 
@@ -142,6 +157,9 @@ pub struct ArchiveStats {
   symlink_count : Int
   total_size : Int
 } derive(Debug)
+
+///|
+pub extend ArchiveStats with @debug.Debug::{to_repr}
 
 ///|
 /// Get statistics about the archive
@@ -206,26 +224,41 @@ pub fn extract_simple_archive(archive : TarArchive) -> Array[(String, String)] {
 }
 
 ///|
-pub impl Show for FileType with output(self, logger) {
+pub impl Show for FileType with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
 
 ///|
-pub impl Show for SimpleHeader with output(self, logger) {
+pub extend FileType with Show::{to_string, output}
+
+///|
+pub impl Show for SimpleHeader with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
 
 ///|
-pub impl Show for TarEntry with output(self, logger) {
+pub extend SimpleHeader with Show::{to_string, output}
+
+///|
+pub impl Show for TarEntry with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
 
 ///|
-pub impl Show for TarArchive with output(self, logger) {
+pub extend TarEntry with Show::{to_string, output}
+
+///|
+pub impl Show for TarArchive with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
 
 ///|
-pub impl Show for ArchiveStats with output(self, logger) {
+pub extend TarArchive with Show::{to_string, output}
+
+///|
+pub impl Show for ArchiveStats with fn output(self, logger) {
   logger.write_string(@debug.render(self.to_repr(), max_depth=2147483647))
 }
+
+///|
+pub extend ArchiveStats with Show::{to_string, output}
