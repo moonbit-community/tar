@@ -305,7 +305,7 @@ test "qc: header size is the payload length; directories are empty" {
 }
 
 ///|
-test "qc: directory names get exactly one trailing slash, idempotently" {
+test "qc: directory names end with a slash, idempotently" {
   @qc.check(
     (name : String) => {
       let a = @tar.TarArchive::new()
