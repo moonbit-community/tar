@@ -25,7 +25,7 @@ fn text_char_gen() -> @qc.Generator[Char] {
 }
 
 ///|
-fn text_of_length(n : Int) -> @qc.Generator[String] {
+fn text_of_length(n : Int32) -> @qc.Generator[String] {
   text_char_gen().array_with_size(n).map(cs => String::from_array(cs))
 }
 
@@ -184,7 +184,7 @@ fn actual_entries(archive : @tar.TarArchive) -> Array[Expected] {
   archive
   .get_entries()
   .map(e => {
-    kind: Int::unsafe_to_char(e.header.file_type.to_byte()),
+    kind: Int32::unsafe_to_char(e.header.file_type.to_byte()),
     name: e.header.name,
     data: e.data,
   })
@@ -196,7 +196,7 @@ fn is_ascii(s : String) -> Bool {
 }
 
 ///|
-fn utf8_length(s : String) -> Int {
+fn utf8_length(s : String) -> Int32 {
   let mut n = 0
   for c in s {
     let x = c.to_int()

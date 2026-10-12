@@ -3,10 +3,10 @@
 
 ///|
 /// TAR constants
-pub const BLOCK_SIZE : Int = 512
+pub const BLOCK_SIZE : Int32 = 512
 
 ///|
-pub const HEADER_SIZE : Int = 512
+pub const HEADER_SIZE : Int32 = 512
 
 ///|
 /// File type indicators
@@ -24,7 +24,7 @@ pub extend FileType with @debug.Debug::{to_repr}
 
 ///|
 /// Convert FileType to byte
-pub fn FileType::to_byte(self : FileType) -> Int {
+pub fn FileType::to_byte(self : FileType) -> Int32 {
   match self {
     Normal => 48 // '0'
     Directory => 53 // '5'
@@ -36,7 +36,7 @@ pub fn FileType::to_byte(self : FileType) -> Int {
 /// Simple TAR header (simplified version)
 pub struct SimpleHeader {
   name : String
-  size : Int
+  size : Int32
   file_type : FileType
 } derive(Debug)
 
@@ -126,7 +126,7 @@ pub fn TarArchive::find_entry(self : TarArchive, name : String) -> TarEntry? {
 
 ///|
 /// Get entry count
-pub fn TarArchive::count(self : TarArchive) -> Int {
+pub fn TarArchive::count(self : TarArchive) -> Int32 {
   self.entries.length()
 }
 
@@ -151,11 +151,11 @@ pub fn TarArchive::list_names(self : TarArchive) -> Array[String] {
 ///|
 /// Get archive statistics
 pub struct ArchiveStats {
-  total_entries : Int
-  file_count : Int
-  directory_count : Int
-  symlink_count : Int
-  total_size : Int
+  total_entries : Int32
+  file_count : Int32
+  directory_count : Int32
+  symlink_count : Int32
+  total_size : Int32
 } derive(Debug)
 
 ///|
